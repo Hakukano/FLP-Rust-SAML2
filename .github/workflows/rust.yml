@@ -1,23 +1,27 @@
-name: Rust
+name: CI
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - "main"
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  audit:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: EmbarkStudios/cargo-deny-action@v1
-      with:
-        log-level: warn
-        command: check bans
-        arguments: --all-features
-        command-arguments: ""
-        credentials: https://${{ secrets.GITHUB_USER }}:${{ secrets.GITHUB_PAT }}@github.com
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.85.1
+      - name: Install cargo audit
+        run: cargo install cargo-audit
+      - run: cargo audit
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.85.1
+      - name: Install cargo clippy
+        run: rustup component add clippy --toolchain=1.85.1
+      - run: cargo clippy --all-features

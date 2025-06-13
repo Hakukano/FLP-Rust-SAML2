@@ -1,27 +1,27 @@
 [package]
-name = "flp-saml2"
+name = "flp-rust-saml2"
 version = "0.1.1"
-authors = ["Hakukano <flp.hakukano@gmail.com>"]
-edition = "2018"
+authors = ["Hakukaze Shikano <hakukano@flp.zone>"]
+edition = "2024"
 description = "SAML2 for Rust"
-repository = "https://github.com/Hakukano/FLP-SAML2"
-documentation = "https://docs.rs/flp-saml2"
-homepage = "https://flp-saml2.rs/"
+repository = "https://github.com/Hakukano/FLP-Rust-SAML2"
+documentation = "https://docs.rs/flp-rust-saml2"
+homepage = "https://flp-rust-saml2.rs/"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-base64 = "0.13"
+base64 = "0.22"
 chrono = "0.4"
-flate2 = "1.0"
+flate2 = "1.1"
 hex = "0.4"
-lazy_static = "1.4"
+lazy_static = "1.5"
 openssl = "0.10"
-quick-xml = { version = "0.22", features = [ "serialize" ] }
-rand = "0.8"
-regex = "1.4"
+quick-xml = { version = "0.37", features = ["serialize"] }
+rand = "0.9"
+regex = "1.11"
 serde = { version = "1.0", features = ["derive"] }
-serde_derive = "=1.0.171"
-url = "2.2"
+serde_derive = "1.0"
+url = "2.5"

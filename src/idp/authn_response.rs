@@ -1,3 +1,4 @@
+use base64::prelude::*;
 use flate2::read::DeflateDecoder;
 use openssl::x509::X509;
 use quick_xml::de::from_str as from_xml_str;
@@ -283,7 +284,7 @@ pub struct Response {
 }
 
 pub fn decode_authn_response(encoded: &str) -> Result<String> {
-    let deflated = base64::decode(encoded).map_err(|err| {
+    let deflated = BASE64_STANDARD.decode(encoded).map_err(|err| {
         Error::InvalidResponse(format!("SAMLResponse is not encoded to base64: {}", err))
     })?;
     String::from_utf8(deflated).map_err(|err| {
@@ -292,7 +293,7 @@ pub fn decode_authn_response(encoded: &str) -> Result<String> {
 }
 
 pub fn decode_inflate_authn_response(deflated_encoded: &str) -> Result<String> {
-    let deflated = base64::decode(deflated_encoded).map_err(|err| {
+    let deflated = BASE64_STANDARD.decode(deflated_encoded).map_err(|err| {
         Error::InvalidResponse(format!("SAMLResponse is not encoded to base64: {}", err))
     })?;
     let mut inflater = DeflateDecoder::new(deflated.as_slice());

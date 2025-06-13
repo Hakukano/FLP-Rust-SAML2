@@ -1,8 +1,9 @@
+use base64::prelude::*;
 use chrono::{SecondsFormat, Utc};
-use flate2::{read::DeflateEncoder, Compression};
+use flate2::{Compression, read::DeflateEncoder};
 use openssl::{hash::MessageDigest, sign::Signer};
 use quick_xml::se::to_string as to_xml_string;
-use rand::{thread_rng, Rng};
+use rand::{Rng, rng};
 use serde::Serialize;
 use std::io::Read;
 use url::Url;
@@ -69,7 +70,7 @@ pub struct AuthnRequest {
 
 impl ServiceProvider {
     pub fn authn_redirect(&self, idp: &IdentityProvider) -> Result<Url> {
-        let random_bytes = thread_rng().gen::<[u8; 21]>();
+        let random_bytes = rng().random::<[u8; 21]>();
         let now = Utc::now();
 
         let authn = to_xml_string(&AuthnRequest {
@@ -97,7 +98,7 @@ impl ServiceProvider {
         let mut deflater = DeflateEncoder::new(authn.as_bytes(), Compression::fast());
         let mut deflated = Vec::new();
         deflater.read_to_end(&mut deflated)?;
-        let saml_request = base64::encode(deflated);
+        let saml_request = BASE64_STANDARD.encode(deflated);
         let mut url = idp.login.clone();
         url.query_pairs_mut()
             .clear()
@@ -113,7 +114,7 @@ impl ServiceProvider {
         let mut signer = Signer::new(MessageDigest::sha256(), &self.private_key)?;
         signer.update(query_all.as_bytes())?;
         url.query_pairs_mut()
-            .append_pair("Signature", &base64::encode(signer.sign_to_vec()?));
+            .append_pair("Signature", &BASE64_STANDARD.encode(signer.sign_to_vec()?));
         Ok(url)
     }
 }
