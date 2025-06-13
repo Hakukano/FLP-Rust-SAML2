@@ -12,10 +12,9 @@ lazy_static! {
 }
 
 pub fn get_cert_data(cert: &X509) -> String {
-    for capture in
-        REGEX_CERTIFICATE.captures_iter(&String::from_utf8(cert.to_pem().unwrap()).unwrap())
-    {
-        return capture[1].into();
-    }
-    String::new()
+    REGEX_CERTIFICATE
+        .captures_iter(&String::from_utf8(cert.to_pem().unwrap()).unwrap())
+        .next()
+        .map(|capture| capture[1].into())
+        .unwrap_or_default()
 }
